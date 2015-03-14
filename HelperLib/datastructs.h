@@ -39,8 +39,8 @@ public:
     void insertTail(T v);
     T removeHead();
     T removeTail();
-    T at(unsigned int i) const;
-    T operator[] (unsigned int i) const;
+    T at(unsigned int index, bool remove = false);
+    T operator[] (unsigned int index);
     unsigned int getSize() { return length; }
 };
 
@@ -146,23 +146,57 @@ T LinkedList<T>::removeTail()
     return v;
 }
 
+//at(index, bool) allows for access and removal of specific indices within the list
+//index = the item to check
+//remove indicates if the item should be remove from the list. 
+//  if remove = false, the value will be returned, but the list will remain unmodified
+//
+
 template <class T>
-T LinkedList<T>::at (unsigned int index) const   //can optimize the performance of this by choosing if head or
-                                                //tail is closer to the desired index
+T LinkedList<T>::at (unsigned int index, bool remove)        
 {
     if(index >= length)
         throw "ERR: Index greater than the length of the list.";
 
-        Node* n = head;
-    for(int i = 0; i < index; i++)
+    Node* n;
+    //to handle large lists, we search from whichever end of the list that index is closest to
+    if(index < length-index) //index is closer to head than tail
     {
-        n = n->next;
+        n = head;
+        for(int i = 0; i < index; i++)
+            n = n->next;
     }
-    return n->value;
+    else //tail is closer to the desired index
+    {
+        n = tail;
+        for(int i = length-1; i > index; i--)
+            n = n->prev;
+    }
+
+    T value = n->value;
+
+    if(remove)
+    {
+        if(index == 0)
+            removeHead();
+        else if(index == length-1)
+            removeTail();
+        else
+        {
+            Node* prev = n->prev;
+            Node* next = n->next;
+            prev->next = next;
+            next->prev = prev;
+            delete n;
+            length--;
+        }
+    }
+
+    return value;
 }
 
 template <class T>
-T LinkedList<T>::operator[] (unsigned int index) const 
+T LinkedList<T>::operator[] (unsigned int index) 
 {
     return this->at(index);
 }

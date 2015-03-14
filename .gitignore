@@ -1,0 +1,8 @@
+## ViM created files ##
+*.swp
+
+## Compiled Files ##
+*.o
+HelperLib/linkedlist_tests
+HelperLib/stack_tests
+

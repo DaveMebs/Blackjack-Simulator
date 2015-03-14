@@ -6,6 +6,15 @@
 using namespace std;
 
 #include "datastructs.h"
+void printList(LinkedList<int>* list)
+{
+    cout << "The list has " << list->getSize() << " elements.\n";
+    cout << "The elements are: \n";
+    for(int i = 0; i < list->getSize(); i++)
+    {
+        cout << '\t' << (*list)[i] << '\n';
+    }
+}
 
 void linkedListTests()
 {
@@ -59,11 +68,28 @@ void linkedListTests()
         cout << l.removeTail() << "\n";
     }
 
-    cout << "The list has " << l.getSize() << " elements.\n";
-    cout << "The elements are: \n";
-    for(int i = 0; i < l.getSize(); i++)
+    printList(&l);
+
+    char c;
+    cout << "Would you like to remove specific items (Y/N)? \n";
+    cin >> c;
+    if(c != 'y' && c != 'Y')
+        return;
+
+    int index;
+    while(1)
     {
-        cout << '\t' << l[i] << '\n';
+        cout << "Enter an index to remove (-1 to quit): ";
+        cin >> index;
+        if(index < 0)
+            return;
+        if(index >= l.getSize())
+            cout << "ERR: Invalid index\n";
+        else
+        {
+            cout << l.at(index, true) << " has been removed from the list.\n";
+            printList(&l);
+        }
     }
 }
 
