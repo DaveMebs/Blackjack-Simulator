@@ -225,6 +225,10 @@ Stack<T>::Stack()
 template<class T>
 Stack<T>::~Stack()
 {
+    while(this->getSize() > 0)
+    {
+        this->pop();
+    }
 }
 
 template<class T>
