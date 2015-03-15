@@ -21,7 +21,7 @@ protected:
     
         T value;        
         
-        Node(T v = 0) //will later move to template
+        Node(T v = 0) 
         {
             next = nullptr;
             prev = nullptr;
@@ -115,6 +115,7 @@ T LinkedList<T>::removeHead()
     {
         delete head;
         head = nullptr;
+        tail = nullptr;
     }
     else
     {
@@ -134,7 +135,11 @@ T LinkedList<T>::removeTail()
         throw "ERR: No value to remove. Tail is null.";
     T v = tail->value;
     if(tail->prev == nullptr)
+    {
         delete tail;
+        head = nullptr;
+        tail = nullptr;
+    }
     else
     {
         tail = tail->prev;
