@@ -1,6 +1,6 @@
-//linkedlist_tests.cpp -- misc tests for validating the linked list data structure defined in datastructs.h
+//datastructs_tests.cpp -- misc tests for validating the data structures defined in datastructs.h
 //Author: David Mebane
-//Date: 1/23/2015
+//Date Started: 1/23/2015
 
 #include <iostream>
 using namespace std;
@@ -93,13 +93,44 @@ void linkedListTests()
     }
 }
 
+void stackTests()
+{
+    Stack<char> s;
+    char c;
+
+    do
+    {
+        cout << "Please enter a letter to add to the stack ('Q' to stop): ";
+        cin >> c;
+        if(c == 'Q')
+            break;
+        s.push(c);
+    }while(1);
+
+    cout << "The letters entered are: \n";
+    while(s.getSize() > 0)
+    {
+        cout << "\t" << s.pop() << "\n";
+    }
+}
+
 int main()
 {
-    cout << "Available tests: \n\t1. Linked List\n\tQ. Exit\n>>";
+    cout << "Available tests: \n"
+         << "\t1. Linked List Tests\n"
+         << "\t2. Stack Tests\n"
+         << "\tQ. Exit\n>>";
     int s;
     cin >> s;
-    if(s == 1)
-        linkedListTests();
+    switch(s)
+    {
+        case 1:
+            linkedListTests();
+            break;
+        case 2:
+            stackTests();
+            break;
+    }
     return 0;
 }
 

@@ -1,4 +1,5 @@
-//shoe_tests.cpp -- contains basic tests verifying that the Shoe class implemented in blackjack.cpp is valid
+//blackjack_tests.cpp -- contains basic tests verifying that the classes
+//defined in blackjack.cpp are valid
 //Author: David Mebane
 //Date Started: 3/15/2015
 
