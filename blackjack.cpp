@@ -10,7 +10,7 @@
 #include <iomanip>
 using namespace std;
 
-#include "HelperLib/datastructs.h"
+#include "datastructs.h"
 
 #ifndef BLACKJACK_CPP_
 #define BLACKJACK_CPP_

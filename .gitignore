@@ -3,6 +3,5 @@
 
 ## Compiled Files ##
 *.o
-HelperLib/linkedlist_tests
-HelperLib/stack_tests
+Tests/bin/*
 blackjack

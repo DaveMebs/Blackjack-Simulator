@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-#include "datastructs.h"
+#include "../datastructs.h"
 
 int main()
 {

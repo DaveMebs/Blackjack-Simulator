@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-#include "datastructs.h"
+#include "../datastructs.h"
 void printList(LinkedList<int>* list)
 {
     cout << "The list has " << list->getSize() << " elements.\n";
