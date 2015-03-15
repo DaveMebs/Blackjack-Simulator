@@ -1,4 +1,4 @@
-//blackjack.cpp -- will contain the meat of the blackjack simulator
+//blackjack.h -- will contain the meat of the blackjack simulator
 //Author: David Mebane
 //Date Started: 3/14/2015
 //
@@ -12,8 +12,8 @@ using namespace std;
 
 #include "datastructs.h"
 
-#ifndef BLACKJACK_CPP_
-#define BLACKJACK_CPP_
+#ifndef BLACKJACK_H_
+#define BLACKJACK_H_
 
 enum card{ace = 1, two, three, four, five, six, seven, eight, nine, ten, jack = 10, queen = 10, king = 10};
 

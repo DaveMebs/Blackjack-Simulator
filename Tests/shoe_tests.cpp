@@ -6,7 +6,7 @@
 #include <iomanip>
 using namespace std;
 
-#include "../blackjack.cpp"
+#include "../blackjack.h"
 
 #ifndef SHOE_TESTS_
 #define SHOE_TESTS_

@@ -15,7 +15,7 @@ stack_tests.o: stack_tests.cpp ../datastructs.h
 shoe_tests: shoe_tests.o
 	g++ shoe_tests.o -o bin/shoe_tests -std=c++11
 
-shoe_tests.o: shoe_tests.cpp ../blackjack.cpp
+shoe_tests.o: shoe_tests.cpp ../blackjack.h
 	g++ -c -g shoe_tests.cpp -std=c++11
 
 clean:
