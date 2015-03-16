@@ -60,6 +60,7 @@ class Dealer : public Player
     public:
         Dealer();
         virtual ~Dealer();
+        card getShowing();
 };
 
 //Shoe Class Implementation
@@ -166,6 +167,11 @@ Dealer::Dealer() : Player()
 
 Dealer::~Dealer()
 {
+}
+
+card Dealer::getShowing()
+{
+    return hand[0];
 }
 
 #endif
