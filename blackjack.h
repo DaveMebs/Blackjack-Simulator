@@ -1,4 +1,4 @@
-//blackjack.h -- will contain the meat of the blackjack simulator
+//blackjack.h -- defines the classes and methods necessary to construct a blackjack simulator
 //Author: David Mebane
 //Date Started: 3/14/2015
 //
@@ -6,8 +6,6 @@
 //Designed to allow for playing a single hand; betting strategies then layered upon this code
 
 #include <cstdlib>
-#include <iostream>
-#include <iomanip>
 using namespace std;
 
 #include "datastructs.h"
@@ -27,9 +25,41 @@ class Shoe
     public:
         Shoe(int decks = 1);
         ~Shoe();
+        int getDecks() { return numDecks; }
+        void setDecks(int decks) { numDecks = decks; }
         void shuffle();
         card dealCard();
         double decksRemaining();
+
+#ifdef DEBUG
+        card getCard(int index);
+#endif
+};
+
+//Player Class Definition
+//TODO: Currently only supports single hand. Need to add support for multi hands to enable splitting
+class Player
+{
+    protected:
+        LinkedList<card> hand;
+    public:
+        Player();
+        virtual ~Player();
+        void addCard(card c);
+        LinkedList<card>* getHand();
+        void clearHand();
+};
+
+//Dealer Class Definition
+//Very similar to the Player class. Key difference will be different logic for calculating
+//      the next "move" (hit/stand/etc.)
+class Dealer : public Player
+{
+    private:
+
+    public:
+        Dealer();
+        virtual ~Dealer();
 };
 
 //Shoe Class Implementation
@@ -82,6 +112,60 @@ card Shoe::dealCard()
 double Shoe::decksRemaining()
 {
     return shoe.getSize() / 52.0;
+}
+
+#ifdef DEBUG
+card Shoe::getCard(int index)
+{
+    Stack<card> tempStack;
+
+    for(int i = 0; i < index; i++)
+        tempStack.push(shoe.pop());
+
+    card c = shoe.pop();
+    shoe.push(c);
+
+    while(tempStack.getSize() > 0)
+        shoe.push(tempStack.pop());
+
+    return c;
+}
+#endif
+
+//Player Class Implementation
+//TODO: Currently only supports single hand. Need to add support for multi hands to enable splitting
+Player::Player()
+{
+}
+
+Player::~Player()
+{
+    hand.~LinkedList();
+}
+
+void Player::addCard(card c)
+{
+    hand.insertTail(c);
+}
+
+LinkedList<card>* Player::getHand()
+{
+    return &hand;
+}
+
+void Player::clearHand()
+{
+    while(hand.getSize() > 0)
+        hand.removeTail();
+}
+
+//Dealer Class Implementation
+Dealer::Dealer() : Player()
+{
+}
+
+Dealer::~Dealer()
+{
 }
 
 #endif

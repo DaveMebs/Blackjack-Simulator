@@ -3,6 +3,8 @@
 //Author: David Mebane
 //Date Started: 3/15/2015
 
+#define DEBUG
+
 #include <iostream>
 #include <iomanip>
 using namespace std;
@@ -13,6 +15,23 @@ using namespace std;
 #define SHOE_TESTS_
 
 void printShoe(Shoe* s)
+{
+    int numCards = 52 * s->getDecks();
+    int i = 0;
+
+    while(i < numCards)
+    {
+        cout << setw(7) << "";
+        for(int j = 0; j < 10 && i < numCards; j++)
+        {
+            cout << setw(3) << right << s->getCard(i);
+            i++;
+        }
+        cout << endl;
+    }
+}
+
+void dealShoe(Shoe* s)
 {
     double counter;
     while((counter = s->decksRemaining()) > 0)
@@ -28,8 +47,10 @@ int main()
 {
     Shoe shoe = Shoe(2);
     shoe.shuffle();
-    cout << "Shoe:" << endl;
+    cout << "Shuffled Shoe:" << endl;
     printShoe(&shoe);
+    cout << "Dealing Shoe:" << endl;
+    dealShoe(&shoe);
 
     return EXIT_SUCCESS;
 }

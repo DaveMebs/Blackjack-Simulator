@@ -4,4 +4,4 @@
 ## Compiled Files ##
 *.o
 Tests/bin/*
-blackjack
+simulator
