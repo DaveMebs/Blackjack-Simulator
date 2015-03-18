@@ -17,14 +17,26 @@ using namespace std;
 //Simulator class is used to keep track of game state
 class Simulator
 {
-    public: enum SimMode{manual, automatic};
+    public: enum SimMode{manual=1, automatic};
  
     private:
         int numDecks;
         SimMode mode;
         LinkedList<Player*> players;
+        int numHands;
         Dealer dealer;
         Shoe shoe;
+
+        bool needToShuffle();
+        void shuffleShoe();
+        void dealHand();
+        void endHand();
+        void playHand();
+        void move(Player* p, bj_move m);
+        void payout();
+        bj_move getManualPlayerMove();
+        void printHand();
+        void printShoe();
 
     public:
         Simulator(int decks, SimMode m);
@@ -32,21 +44,18 @@ class Simulator
         void setDecks(int decks);
         void setMode(SimMode m);
         void setPlayers(int p);
-        void shuffleShoe();
-        void dealHand();
-        void endHand();
-        bool needToShuffle();
-
-        void printHand();
-        void printShoe();
+        void setHands(int n);
+        void run();
 };
 
+/***** CONSTRUCTORS *****/
 Simulator::Simulator(int decks = 1, SimMode m = manual)
 {
     setDecks(decks);
     mode = m;
 }
 
+/***** DESTRUCTORS *****/
 Simulator::~Simulator()
 {
     Player* p;
@@ -57,26 +66,21 @@ Simulator::~Simulator()
     }
 }
 
-void Simulator::setDecks(int decks)
+/***** PRIVATE METHODS *****/
+bool Simulator::needToShuffle()
 {
-    numDecks = decks;
-    shoe.setDecks(decks);
-}
-
-void Simulator::setMode(SimMode m)
-{
-    mode = m;
-}
-
-void Simulator::setPlayers(int p)
-{
-    for(int i = 0; i < p; i++)
-        players.insertTail(new Player());
+    //shuffle shoe when less than a deck is remaining
+    //this limit is fine unless the number of players is greater than a normal casino table size
+    return shoe.decksRemaining() < 1 ? true : false;
 }
 
 void Simulator::shuffleShoe()
 {
     shoe.shuffle();
+#ifdef DEBUG
+    cout << "New Shoe:" << endl;
+    this->printShoe();
+#endif
 }
 
 void Simulator::dealHand()
@@ -96,6 +100,74 @@ void Simulator::endHand()
     for(int i = 0; i < players.getSize(); i++)
         players[i]->clearHand();
     dealer.clearHand();
+}
+
+void Simulator::playHand()
+{
+    this->dealHand();
+
+#ifdef DEBUG 
+    this->printHand();
+#endif
+
+    bj_move m;
+    for(int i = 0; i < players.getSize(); i++)
+    {
+        do
+        {
+            if(mode == manual)
+                m = Simulator::getManualPlayerMove();
+            else
+                m = players[i]->getBestMove(dealer.getShowing());
+            
+            Simulator::move(players[i], m);
+        }while(players[i]->allHandsComplete() != true);
+    }
+
+    while(dealer.allHandsComplete() != true)
+    {
+        m = dealer.getMove();
+        Simulator::move(&dealer, m);
+    }
+
+    this->payout();
+
+    this->endHand();
+}
+
+void Simulator::move(Player* p, bj_move m)
+{
+    switch(m)
+    {
+        case hit:
+            p->addCard(shoe.dealCard());
+            break;
+        case split:
+            cout << "ERR: Not yet implemented" << endl;
+            break;
+        case doubleDown:
+            p->addCard(shoe.dealCard());
+            p->markHandComplete();
+            break;
+        case stand:
+            p->markHandComplete();
+            break;
+        default:
+            throw "ERR: No valid move was selected"; 
+    }
+}
+
+//TODO: Implement
+//This method iterates through the hands which have been completed, determines winners and losers, and 
+//calculates wins and losses accordingly
+void Simulator::payout()
+{
+}
+
+//TODO: Must implement next to begin trying out the simulator
+bj_move Simulator::getManualPlayerMove()
+{
+    return stand;
 }
 
 void Simulator::printHand()
@@ -136,11 +208,42 @@ void Simulator::printShoe()
     }
 }
 
-bool Simulator::needToShuffle()
+/***** PUBLIC METHODS *****/
+void Simulator::setDecks(int decks)
 {
-    //shuffle shoe when less than a deck is remaining
-    //this limit is fine unless the number of players is greater than a normal casino table size
-    return shoe.decksRemaining() < 1 ? true : false;
+    numDecks = decks;
+    shoe.setDecks(decks);
+}
+
+void Simulator::setMode(SimMode m)
+{
+    mode = m;
+}
+
+void Simulator::setPlayers(int p)
+{
+    for(int i = 0; i < p; i++)
+        players.insertTail(new Player());
+}
+
+void Simulator::setHands(int n)
+{
+    numHands = n;
+}
+
+void Simulator::run()
+{
+    for(int i = 0; i < numHands; i++)
+    {
+        if(this->needToShuffle())
+            this->shuffleShoe();
+
+#ifdef DEBUG
+        cout << "\nHand " << i << ":\n";
+#endif
+
+        this->playHand();
+    }
 }
 
 int main()
@@ -170,19 +273,10 @@ int main()
 
     cout << "\nEnter the number of hands to play: ";
     cin >> hands;
+    sim.setHands(hands);
 
-    sim.shuffleShoe();
+    sim.run();
 
-    cout << "\nInitial shoe contents: \n";
-    sim.printShoe();
-
-    for(int i = 0; i < hands; i++)
-    {
-        cout << "\nHand " << i << ":\n";
-        sim.dealHand();
-        sim.printHand();
-        sim.endHand();
-    }
     return 0;
 }
 

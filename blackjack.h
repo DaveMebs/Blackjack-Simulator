@@ -14,6 +14,7 @@ using namespace std;
 #define BLACKJACK_H_
 
 enum card{ace = 1, two, three, four, five, six, seven, eight, nine, ten, jack = 10, queen = 10, king = 10};
+enum bj_move{hit, split, doubleDown, stand};
 
 //Shoe Class Definition
 class Shoe
@@ -38,16 +39,26 @@ class Shoe
 
 //Player Class Definition
 //TODO: Currently only supports single hand. Need to add support for multi hands to enable splitting
+//          Part of adding this will entail moving hand to a struct with both the hand and whether or not it is
+//              complete
+//          The current LinkedList<card> variable will then move to a LinkedList of hand structs
+//          getBestMove will then work on the most recent hand that has not been marked complete
 class Player
 {
     protected:
+        //the following two variables will combine in a struct when split support is added
         LinkedList<card> hand;
+        bool handComplete = false;
+
     public:
         Player();
         virtual ~Player();
         void addCard(card c);
         LinkedList<card>* getHand();
         void clearHand();
+        bj_move getBestMove(card dCard); //should move this to static?
+        void markHandComplete();
+        bool allHandsComplete();
 };
 
 //Dealer Class Definition
@@ -61,6 +72,7 @@ class Dealer : public Player
         Dealer();
         virtual ~Dealer();
         card getShowing();
+        bj_move getMove();
 };
 
 //Shoe Class Implementation
@@ -158,6 +170,26 @@ void Player::clearHand()
 {
     while(hand.getSize() > 0)
         hand.removeTail();
+
+    handComplete = false;
+}
+
+//TODO: Implement logic to calculate optimal move per basic strategy
+bj_move Player::getBestMove(card dCard)
+{
+    return stand;
+}
+
+//TODO: As part of adding support for split, this must be implemented
+void Player::markHandComplete()
+{
+    handComplete = true;
+}
+
+//TODO: 
+bool Player::allHandsComplete()
+{
+    return handComplete;
 }
 
 //Dealer Class Implementation
@@ -169,9 +201,16 @@ Dealer::~Dealer()
 {
 }
 
+//Get Showing returns the card that is "visible" to the player when deciding on their move
 card Dealer::getShowing()
 {
     return hand[0];
+}
+
+//TODO: Implement
+bj_move Dealer::getMove()
+{
+    return stand;
 }
 
 #endif
